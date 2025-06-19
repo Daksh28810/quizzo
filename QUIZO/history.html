@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>History Quiz</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    #result-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+
+    .result-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 1;
+      border-radius: 0;
+    }
+
+    .result-content {
+      position: relative;
+      z-index: 2;
+      background: rgba(255, 255, 255, 0.92);
+      border-radius: 18px;
+      padding: 150px 150px;
+      /* Increased padding for more spacious content */
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      text-align: center;
+      min-width: 450px;
+      /* Increased minimum width */
+      max-width: 600px;
+      /* Increased maximum width */
+      color: #22223b;
+      font-size: 1.5rem;
+    }
+
+    .result-content h1 {
+      font-size: 4rem;
+      margin-bottom: 30px;
+      color: #ffcc29;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+    }
+
+    .score-block {
+      font-family: 'Segoe UI', Verdana, Geneva, Tahoma, sans-serif;
+      font-size: 2rem;
+      margin-bottom: 38px;
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.08);
+      padding: 18px 0 14px 0;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+    }
+
+    .result-actions {
+      display: flex;
+      gap: 18px;
+      justify-content: center;
+      margin-top: 18px;
+    }
+
+    .result-btn {
+      padding: 18px 20px;
+      font-size: 1.18rem;
+      border-radius: 10px;
+      border: none;
+      background: #23272f;
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+      white-space: normal;
+      overflow-wrap: break-word;
+      word-break: break-word;
+      min-width: 0;
+      width: 100%;
+      min-height: 56px;
+      text-align: center;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .result-btn:hover {
+      background: #ffcc29;
+      transform: translateY(-2px) scale(1.04);
+      color: black;
+    }
+
+    @media (max-width: 700px) {
+      .result-content {
+        min-width: 90vw;
+        max-width: 98vw;
+        padding: 28px 8vw 24px 8vw;
+      }
+    }
+  </style>
+</head>
+<style>
+  body {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    /* Start at top */
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    background-image: url('History\ image.avif');
+    position: absolute;
+    background-size: cover;
+    background-position: center;
+    font-family: 'Segoe UI', Verdana, Geneva, Tahoma, sans-serif;
+    color: #fff;
+  }
+
+  #quiz-container {
+    max-width: 1100px;
+    width: 90vw;
+    min-height: 520px;
+    background: rgba(34, 40, 49, 0.95);
+    border-radius: 18px;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    padding: 48px 36px 36px 36px;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    margin: 40px auto 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .quiz-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
+
+  #question-number {
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin-bottom: 12px;
+    color: #ffcc29;
+  }
+
+  #question {
+    font-size: 2.2rem;
+    font-weight: 600;
+    margin-bottom: 38px;
+    color: #fff;
+  }
+
+  #options {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 22px;
+    margin-bottom: 28px;
+    justify-items: center;
+    align-items: center;
+    width: 100%;
+  }
+
+  .option-btn {
+    padding: 18px 20px;
+    font-size: 1.18rem;
+    border-radius: 10px;
+    border: none;
+    background: #23272f;
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    white-space: normal;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    min-width: 0;
+    width: 100%;
+    min-height: 56px;
+    text-align: center;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .option-btn:hover,
+  .option-btn.selected {
+    background: #ffcc29;
+    color: #181c24;
+    transform: scale(1.04);
+  }
+
+  #next-btn {
+    margin-top: 40px;
+    width: 210px;
+    padding: 14px 0;
+    font-size: 1.15rem;
+    border-radius: 8px;
+    border: none;
+    background: #ffcc29;
+    color: #181c24;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    text-align: center;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  #next-btn:disabled {
+    background: #b3b3b3;
+    color: #eee;
+    cursor: not-allowed;
+  }
+
+  @media (max-width: 700px) {
+    #quiz-container {
+      max-width: 98vw;
+      padding: 18px 4vw;
+    }
+
+    #options {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  #timer {
+    font-size: 2.5rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: whitesmoke;
+    /* Aesthetically pleasing yellow */
+    text-align: center;
+    /* Center the timer text */
+    padding: 10px 20px;
+    /* Add some padding for better visual appearance */
+    border-radius: 8px;
+    /* Add rounded corners */
+    background-color: rgba(0, 0, 0, 0.1);
+    /* Subtle background for better visibility */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    /* Add a subtle shadow */
+
+    #timer.low-time {
+      color: red;
+    }
+</style>
+
+<body>
+  <div id="quiz-container">
+    <div id="timer">2:00</div>
+    <div id="question-number"></div>
+    <div id="question"></div>
+    <div id="options"></div>
+    <button id="next-btn" onclick="nextQuestion()" disabled>Next</button>
+  </div>
+  <div id="result-container" style="display:none;">
+    <div class="result-overlay"></div>
+    <div class="result-content">
+      <h2>Quiz Complete!</h2>
+      <p id="score"></p>
+      <div class="result-actions">
+        <button onclick="window.location.href='homepage.html'" class="result-btn back-btn">Back to Topics</button>
+      </div>
+    </div>
+  </div>
+  <script>
+    document.getElementById('options').addEventListener('click', function (e) {
+      if (e.target.classList.contains('option-btn')) {
+        document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+        e.target.classList.add('selected');
+      }
+    });
+  </script>
+  <script src="history.js"></script>
+</body>
+
+</html>
